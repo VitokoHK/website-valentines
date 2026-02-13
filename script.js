@@ -35,6 +35,14 @@ let attempts = 0;
 let yesScale = 1;
 let isFlying = false;
 
+const bgMusic = new Audio("sound-effects/background_yes_music.mp3");
+bgMusic.loop = true;
+bgMusic.preload = "auto";
+
+// Zelda Heart Icons (Base64)
+const iconHeartRed = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='%23ff4d6d'><path d='M1 3h2v2H1zM3 1h2v2H3zM5 0h6v1H5zM11 1h2v2h-2zM13 3h2v2h-2zM15 5h1v4h-1zM13 9h2v2h-2zM11 11h2v2h-2zM9 13h2v2H9zM7 15h2v1H7zM5 13h2v2H5zM3 11h2v2H3zM1 9h2v2H1zM0 5h1v4H0zM3 3h3v3H3zM10 3h3v3h-3z'/></svg>")`;
+const iconHeartGrey = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='%23aaaaaa'><path d='M1 3h2v2H1zM3 1h2v2H3zM5 0h6v1H5zM11 1h2v2h-2zM13 3h2v2h-2zM15 5h1v4h-1zM13 9h2v2h-2zM11 11h2v2h-2zM9 13h2v2H9zM7 15h2v1H7zM5 13h2v2H5zM3 11h2v2H3zM1 9h2v2H1zM0 5h1v4H0zM3 3h3v3H3zM10 3h3v3h-3z'/></svg>")`;
+
 /* -------------------- SOUND SYSTEM -------------------- */
 
 const soundPools = {
@@ -73,6 +81,31 @@ const soundPools = {
     ])
 };
 
+let soundEnabled = true;
+let rainStarted = false;
+const soundToggle = document.getElementById("sound-toggle");
+
+soundToggle.addEventListener("click", () => {
+    soundEnabled = !soundEnabled;
+    
+    if (soundEnabled) {
+        // Switch to Red Heart (by removing .muted)
+        soundToggle.classList.remove("muted");
+        soundToggle.classList.add("playing");
+        
+        // Resume music if it was already playing (rainStarted is from your existing logic)
+        if (rainStarted) {
+            bgMusic.play();
+        }
+    } else {
+        // Switch to Grey Heart
+        soundToggle.classList.add("muted");
+        soundToggle.classList.remove("playing");
+        
+        // Stop the music
+        bgMusic.pause();
+    }
+});
 
 let currentlyPlaying = null;
 
@@ -93,6 +126,8 @@ function stopAllSounds() {
 
 function playRandomFromPool(poolName) {
     stopAllSounds();
+    
+    if (!soundEnabled) return; // Stop right here if muted!
 
     const sound = soundPools[poolName].next();
 
@@ -353,6 +388,24 @@ yesBtn.addEventListener("click", () => {
 
     noBtn.style.transition = "left 0.22s ease, top 0.22s ease";
 
+
+
+    // --- Background Music Fade-In ---
+
+    bgMusic.volume = 0;
+    bgMusic.currentTime = 10;
+    bgMusic.play().catch(error => console.log("Audio play failed:", error));
+
+    let fadeIn = setInterval(() => {
+        if (bgMusic.volume < 0.5) { // Adjust 0.5 to your preferred max volume
+            bgMusic.volume = Math.min(bgMusic.volume + 0.008, 0.5);
+        } else {
+            clearInterval(fadeIn);
+        }
+    }, 100); // Increases volume every 100ms
+
+
+
     /* ---- SUCCESS STATE ---- */
 
     // Play YES sound
@@ -367,6 +420,8 @@ yesBtn.addEventListener("click", () => {
     buttons.style.display = "none";
     if (isFlying) noBtn.style.display = "none";
 
+
+    rainStarted = true;
     // Heart rain
     setInterval(() => {
         const heart = document.createElement("div");
