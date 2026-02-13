@@ -211,9 +211,9 @@ const moveButton = (e) => {
     /* ---- Difficulty Scaling ---- */
 
     let speed = 0.22;
-    if (attempts > 10) speed = 0.15;
-    if (attempts > 18) speed = 0.1;
-    if (attempts > 25) speed = 0.06;
+    if (attempts >= 5) speed = 0.15;
+    if (attempts >= 10) speed = 0.1;
+    if (attempts >= 15) speed = 0.06;
 
     noBtn.style.transition = `left ${speed}s ease, top ${speed}s ease`;
 
@@ -223,11 +223,11 @@ const moveButton = (e) => {
     yesBtn.style.setProperty("--yes-scale", yesScale);
     yesBtn.style.transform = `scale(${yesScale})`;
 
-    if (attempts > 10) {
+    if (attempts >= 10) {
         yesBtn.style.filter = "drop-shadow(0 0 10px red)";
     }
 
-    if (attempts > 15) {
+    if (attempts >= 15) {
         yesBtn.style.animation = "pulseYes 0.8s infinite";
     }
 
@@ -236,15 +236,13 @@ const moveButton = (e) => {
     let pool;
     let phase;
 
-    console.log(attempts);
-
     if (attempts < 5) {
         pool = phraseStages.cute;
         phase = "cute";
     } else if (attempts < 10) {
         pool = phraseStages.dramatic;
         phase = "dramatic";
-    } else if (attempts <15) {
+    } else if (attempts < 15) {
         pool = phraseStages.emotional;
         phase = "emotional";
     } else {
@@ -258,13 +256,13 @@ const moveButton = (e) => {
 
     playRandomFromPool(phase);
 
-    if (attempts < 9) subtitle.style.color = "black";
+    if (attempts < 10) subtitle.style.color = "black";
     else if (attempts < 15) subtitle.style.color = "#8b0000";
     else subtitle.style.color = "red";
 
     /* ---- Background Rage Mode ---- */
 
-    if (attempts > 9) {
+    if (attempts >= 10) {
         const intensity = Math.min(attempts * 5, 120);
         document.body.style.backgroundColor =
             `rgba(255,0,0,${intensity/255})`;
@@ -279,7 +277,7 @@ const moveButton = (e) => {
         subtitle.style.transform = "scale(1.2)";
     }
 
-    if (attempts > 15) {
+    if (attempts >= 15) {
         document.querySelector(".letter-window")
             .style.animation = "screenShake 0.3s infinite";
     }
