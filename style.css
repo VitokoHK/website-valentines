@@ -151,3 +151,41 @@ h2 { font-size: clamp(13px, 2.2vw, 22px); margin: 0; min-height: 1.3em; text-ali
     opacity: 1;
     transform: scale(1);
 }
+
+/* --- Sound Toggle Button --- */
+.mute-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    z-index: 3000; /* Increased to stay above everything */
+    
+    /* Default to Red Heart so it's never invisible */
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='%23ff4d6d'><path d='M1 3h2v2H1zM3 1h2v2H3zM5 0h6v1H5zM11 1h2v2h-2zM13 3h2v2h-2zM15 5h1v4h-1zM13 9h2v2h-2zM11 11h2v2h-2zM9 13h2v2H9zM7 15h2v1H7zM5 13h2v2H5zM3 11h2v2H3zM1 9h2v2H1zM0 5h1v4H0zM3 3h3v3H3zM10 3h3v3h-3z'/></svg>");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    image-rendering: pixelated;
+    
+    transition: transform 0.2s ease;
+    filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.2));
+}
+
+/* While sound is ON, it pulses */
+.mute-btn.playing {
+    animation: vibingHeart 0.8s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);
+}
+
+/* While sound is OFF, it turns grey and stops pulsing */
+.mute-btn.muted {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='%23aaaaaa'><path d='M1 3h2v2H1zM3 1h2v2H3zM5 0h6v1H5zM11 1h2v2h-2zM13 3h2v2h-2zM15 5h1v4h-1zM13 9h2v2h-2zM11 11h2v2h-2zM9 13h2v2H9zM7 15h2v1H7zM5 13h2v2H5zM3 11h2v2H3zM1 9h2v2H1zM0 5h1v4H0zM3 3h3v3H3zM10 3h3v3h-3z'/></svg>");
+    animation: none;
+    opacity: 0.7;
+}
+
+@keyframes vibingHeart {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
