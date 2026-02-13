@@ -1,0 +1,158 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url("heart-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    font-family: "Pixelify Sans", sans-serif;
+    overflow: hidden;
+    touch-action: manipulation;
+}
+
+/* --- Screen 1: Envelope --- */
+#envelope-container { text-align: center; cursor: pointer; }
+#envelope { width: 350px; animation: pulse 1.5s infinite; }
+.envelope-text {
+    font-size: 36px;
+    color: #000;
+    margin-top: 25px;
+    font-weight: bold;
+}
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* --- Screen 2 & 3: Letter Window --- */
+#letter-container {
+    display: none;
+    position: fixed;
+    inset: 0;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+/*
+  window.png is 2000x1825px.
+  Content pane (pink checkerboard) runs:
+    top 31.8% (y=580) → bottom 91.5% (y=1670)
+    left 10%  (x=200) → right  92.5% (x=1850)
+*/
+.letter-window {
+    width: min(90vw, 90vh * (2000 / 1825));
+    aspect-ratio: 2000 / 1825;
+    position: relative;
+    background: url("window.png") no-repeat center / contain;
+    transform: scale(1.1);
+    opacity: 0;
+    transition: all 0.6s ease;
+    flex-shrink: 0;
+}
+
+.letter-window.open { transform: scale(1); opacity: 1; }
+
+.content-wrapper {
+    position: absolute;
+    top: 32.5%;
+    left: 11%;
+    width: 80%;
+    height: 57%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    color: #000;
+    box-sizing: border-box;
+}
+
+h1 { font-size: clamp(16px, 3.8vw, 36px); margin: 0; text-align: center; line-height: 1.2; }
+h2 { font-size: clamp(13px, 2.2vw, 22px); margin: 0; min-height: 1.3em; text-align: center; }
+
+.cat { width: clamp(100px, 32%, 200px); }
+
+/* Both buttons sit naturally in flow, side by side */
+.buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+}
+
+.btn { width: clamp(70px, 16%, 120px); cursor: pointer; }
+
+/*
+  No-btn starts static (in-flow next to yes).
+  JS adds .flying on first interaction → switches to fixed so it can roam.
+*/
+.no-btn {
+    transition: left 0.22s ease, top 0.22s ease;
+}
+
+.no-btn.flying {
+    position: fixed;
+    z-index: 100;
+}
+
+/* --- Final State --- */
+.final-text {
+    font-size: clamp(13px, 2.2vw, 22px);
+    line-height: 1.4;
+    text-align: center;
+    margin: 0;
+    opacity: 0.85;   /* ← subtle softness */
+}
+
+.trail-heart {
+    position: fixed;
+    pointer-events: none;
+    z-index: 999;
+    animation: fadeUp 1s forwards;
+}
+@keyframes fadeUp {
+    0%   { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-30px); }
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    50% { transform: translateX(2px); }
+    75% { transform: translateX(-2px); }
+    100% { transform: translateX(0); }
+}
+
+@keyframes pulseYes {
+    0%,100% { transform: scale(var(--yes-scale,1)); }
+    50% { transform: scale(calc(var(--yes-scale,1) + 0.08)); }
+}
+
+@keyframes screenShake {
+    0% { transform: translate(0,0); }
+    25% { transform: translate(-2px,2px); }
+    50% { transform: translate(2px,-2px); }
+    75% { transform: translate(-2px,2px); }
+    100% { transform: translate(0,0); }
+}
+
+
+.yes-clone {
+    z-index: 50;
+}
+
+
+.yes-clone {
+    z-index: 50;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.yes-clone.show {
+    opacity: 1;
+    transform: scale(1);
+}
